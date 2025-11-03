@@ -13,4 +13,14 @@
 #include <chrono>
 #include <random>
 #include <numeric>
+using namespace std;
+using chrono::duration_cast;
+using chrono::microseconds;
+using chrono::system_clock;
+
+    const int NUM_RUNS = 15;
+    const int NUM_OPS = 4;
+    const int NUM_STRUCTTS =3;
+    enum Op{}
+
 
