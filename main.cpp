@@ -21,9 +21,13 @@ using chrono::system_clock;
     const int NUM_RUNS = 15;
     const int NUM_OPS = 4;
     const int NUM_STRUCTS =3;
+
     enum Op {READ_OP,SORT_OP, INSERT_OP, DELEE_OP };
     enum DS {VEC, LIST_DS, SET_DS};
+
     const int K_INSERT = 2000;
+    const int K_DELETE = 2000;
+
     const int COLW_LABEL = 12;
     const int CLOW_NUM = 11;
 
@@ -90,8 +94,13 @@ vector<string> v(baseData);
     runSlice[DELEE_OP][VEC] = time_delete_vector(v, K_DELETE);
     runSlice[DELEE_OP][LIST_DS] = time_delete_list(lst, K_DELETE);
     runSlice[DELEE_OP][SET_DS] = time_delete_set(st, K_DELETE);
+    
 }
 
-
+void print_average(const long long accum[NUM_OPS][NUM_STRUCTS]){
+    auto avg = [] (long long sum){ return sum / NUM_RUNS;};
+    cout.setf(ios::right);
+    cout << " " << setw
+}
 
 
