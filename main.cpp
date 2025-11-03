@@ -16,20 +16,20 @@
 using namespace std;
 using chrono::duration_cast;
 using chrono::microseconds;
-using chrono::system_clock;
+using chrono::steady_clock;
 
     const int NUM_RUNS = 15;
     const int NUM_OPS = 4;
     const int NUM_STRUCTS =3;
 
-    enum Op {READ_OP,SORT_OP, INSERT_OP, DELEE_OP };
+    enum op {READ_OP,SORT_OP, INSERT_OP, DELETE_OP };
     enum DS {VEC, LIST_DS, SET_DS};
 
     const int K_INSERT = 2000;
     const int K_DELETE = 2000;
 
     const int COLW_LABEL = 12;
-    const int CLOW_NUM = 11;
+    const int COLW_NUM = 11;
 
 //---------function prototypes---------
 bool load_names_file(const string& filename, vector<string>& out);
@@ -51,7 +51,7 @@ long long time_delete_set(set<string>& st, int k);
 
 int main(){
     vector<string> baseData;
-    if(!load_names_file("name.txt", baseData)){
+    if(!load_names_file("names.txt", baseData)){
         cout <<"Error loading file"<<endl;
         return 1;
     }
@@ -60,7 +60,7 @@ int main(){
         run_one_race(baseData, times[0]);
         for (int op = 0; op < NUM_OPS; ++op)
         for (int ds = 0; ds < NUM_STRUCTS; ++ds);
-        times[1][op][ds] += times[0][op][ds];
+         times[1][op][ds] += times[0][op][ds];
     }
 
 cout << "Number of simulations: "<< NUM_RUNS << endl;
@@ -166,7 +166,7 @@ long long time_insert_list (list<string>& lst, int k){
 
 long long time_insert_set(vector<string>& st, int k){
     auto t0 = std::chrono::steady_clock::now();
-    for (int i = 0; i < k && !st.empty();++i) lst.pop_back();
+    for (int i = 0; i < k; ++i) st.insert("new" + to_string(i));
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
@@ -184,3 +184,9 @@ long long time_delete_vector(vector<string>& v, int k){
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
+  long long time_delete_set(set<string>& st, int k){
+      auto t0 = std::chrono::steady_clock::now();
+      for (int i =0; i < k && !st.empty(); ++i) st.erase(st.begin());
+      auto t1 = std::chrono::steady_clock::now();
+      return duration_cast<microseconds>(t1-t0).count();
+  }
