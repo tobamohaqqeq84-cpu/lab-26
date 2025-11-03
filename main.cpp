@@ -100,7 +100,44 @@ vector<string> v(baseData);
 void print_average(const long long accum[NUM_OPS][NUM_STRUCTS]){
     auto avg = [] (long long sum){ return sum / NUM_RUNS;};
     cout.setf(ios::right);
-    cout << " " << setw
+    cout << " " << setw(COLW_LABEL) << "Operation" << setw(CLOW_NUM) << "Vector" << setw(CLOW_NUM) << "List" << setw(CLOW_NUM) << "Set" << endl;
+
+    auto row = [&](string name, int op){
+        cout << setw(COLW_LABEL) << name << setw(CLOW_NUM) << avg(accum[op][VEC]) << setw(CLOW_NUM) << avg(accum[op][LIST_DS]) << setw(CLOW_NUM) << avg(accum[op][SET_DS]) << endl;
+    };
+
+row("Read", READ_OP);
+row("Sort", SORT_OP);
+row("Insert", INSERT_OP);
+row("Delete", DELEE_OP);
 }
 
+long long time_read_vector(const vector<string>& base){
+    auto t0 = std::chrono::steady_clock::now();
+    for (auto& s : base) v.push_back(s);
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
+long long time_read_list(const vector<string>& base){
+    auto t0 = std::chrono::steady_clock::now();
+    list<string> lst;
+    for (auto& s : base) lst.push_back(s);
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
 
+long long time_read_set(const vector<string>& base){
+    auto t0 = std::chrono::steady_clock::now();
+    set<string> st;
+    for (auto& s : base) st.insert(s);
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
+
+long long time_sort_vector(const vector<string>&base){
+    vector<string> v(base);
+    auto t0 = std::chrono::steady_clock::now();
+    sort(v.begin(), v.end());
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
