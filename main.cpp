@@ -54,13 +54,25 @@ int main(){
     long long times[2][NUM_OPS][NUM_STRUCTS] ={};
     for (int run = 1; run <= NUM_RUNS;++run){
         run_one_race(baseData, times[0]);
-        for (int op = 0; op; <NUM_OPS; ++op)
+        for (int op = 0; op < NUM_OPS; ++op)
         for (int ds = 0; ds < NUM_STRUCTS; ++ds);
         times[1][op][ds] += times[0][op][ds];
     }
+
+cout << "Number of simulations: "<< NUM_RUNS << endl;
+    print_average(times[1]);
+    return 0;
     
 }
 
+bool load_names_file(const string& filename, vector<string>& out){
+    ifstream fin(filename);
+    if(!fin) return false;
+    string s; out.clear();
+    while (fin >> s) out.push_back(s);
+    return true;
+}
+void
 
 
 
