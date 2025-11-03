@@ -18,16 +18,20 @@ using chrono::duration_cast;
 using chrono::microseconds;
 using chrono::steady_clock;
 
+// these numbers are used to index into the 2D arrays
     const int NUM_RUNS = 15;
-    const int NUM_OPS = 4;
-    const int NUM_STRUCTS =3;
+    const int NUM_OPS = 4; // read, sort, insert, delete
+    const int NUM_STRUCTS =3;  // vector, list, set
 
+//this helps us lable which operation or data structure we are using
     enum Op{READ_OP,SORT_OP, INSERT_OP, DELETE_OP };
     enum DS {VEC, LIST_DS, SET_DS};
 
+//these are the number of insertions and deletions we will do
     const int K_INSERT = 2000;
     const int K_DELETE = 2000;
 
+//these are the column widths for the output table
     const int COLW_LABEL = 12;
     const int COLW_NUM = 11;
 
@@ -51,24 +55,32 @@ long long time_delete_set(set<string>& st, int k);
 
 int main(){
     vector<string> baseData;
+    
+    //load the names from the file
     if(!load_names_file("names.txt", baseData)){
         cout <<"Error loading file"<<endl;
         return 1;
     }
+
+    //3D array 
+    //times[0] = one run's result 
+    //times[1] = sum of all runs' results
     long long times[2][NUM_OPS][NUM_STRUCTS] ={};
     for (int run = 1; run <= NUM_RUNS;++run){
         run_one_race(baseData, times[0]);
+
+        //add the current run's results to the totals
         for (int op = 0; op < NUM_OPS; ++op)
         for (int ds = 0; ds < NUM_STRUCTS; ++ds)
          times[1][op][ds] += times[0][op][ds];
     }
-
+//print the results
 cout << "Number of simulations: "<< NUM_RUNS << endl;
     print_average(times[1]);
     return 0;
     
 }
-
+// load names from file into vector
 bool load_names_file(const string& filename, vector<string>& out){
     ifstream fin(filename);
     if(!fin) return false;
@@ -76,6 +88,7 @@ bool load_names_file(const string& filename, vector<string>& out){
     while (fin >> s) out.push_back(s);
     return true;
 }
+// run one race and store the results in runSlice
 void run_one_race(const vector<string>& baseData, long long runSlice[NUM_OPS][NUM_STRUCTS]){
     runSlice[READ_OP][VEC] = time_read_vector(baseData);
     runSlice[READ_OP][LIST_DS] = time_read_list(baseData);
@@ -87,7 +100,7 @@ void run_one_race(const vector<string>& baseData, long long runSlice[NUM_OPS][NU
 vector<string> v(baseData);
     list<string> lst(baseData.begin(), baseData.end());
     set<string> st(baseData.begin(), baseData.end());
-
+//insert and delete
     runSlice[INSERT_OP][VEC] = time_insert_vector(v, K_INSERT);
     runSlice[INSERT_OP][LIST_DS] = time_insert_list(lst, K_INSERT);
     runSlice[INSERT_OP][SET_DS] = time_insert_set(st, K_INSERT);
@@ -96,7 +109,7 @@ vector<string> v(baseData);
     runSlice[DELETE_OP][SET_DS] = time_delete_set(st, K_DELETE);
     
 }
-
+// print the average of the results
 void print_average(const long long accum[NUM_OPS][NUM_STRUCTS]){
     auto avg = [] (long long sum){ return sum / NUM_RUNS;};
     cout.setf(ios::right);
@@ -111,14 +124,14 @@ row("Sort", SORT_OP);
 row("Insert", INSERT_OP);
 row("Delete", DELETE_OP);
 }
-
+// insert elements into the vector
 long long time_read_vector(const vector<string>& base){
     auto t0 = std::chrono::steady_clock::now();
     vector<string> v;
     for (auto& s : base) v.push_back(s);
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
-}
+}// insert elements into the list
 long long time_read_list(const vector<string>& base){
     auto t0 = std::chrono::steady_clock::now();
     list<string> lst;
@@ -126,7 +139,7 @@ long long time_read_list(const vector<string>& base){
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
-
+// insert elements into the set
 long long time_read_set(const vector<string>& base){
     auto t0 = std::chrono::steady_clock::now();
     set<string> st;
@@ -134,7 +147,7 @@ long long time_read_set(const vector<string>& base){
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
-
+// sort the vector
 long long time_sort_vector(const vector<string>&base){
     vector<string> v(base);
     auto t0 = std::chrono::steady_clock::now();
@@ -142,7 +155,7 @@ long long time_sort_vector(const vector<string>&base){
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
-
+// sort the list
 long long time_sort_list(const vector<string>& base){
     list<string> lst(base.begin(), base.end());
     auto t0 = std::chrono::steady_clock::now();
@@ -150,41 +163,42 @@ long long time_sort_list(const vector<string>& base){
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
-
+// insert k elements into the vector
 long long time_insert_vector(vector<string>& v, int k){
     auto t0 = std::chrono::steady_clock::now();
     for (int i = 0; i < k; ++i) v.push_back("new" + to_string(i));
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
-
+// insert k elements into the list
 long long time_insert_list (list<string>& lst, int k){
     auto t0 = std::chrono::steady_clock::now();
     for (int i = 0; i < k; ++i) lst.push_back("new" + to_string(i));
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
-
+// insert k elements into the set
 long long time_insert_set(set<string>& st, int k){
     auto t0 = std::chrono::steady_clock::now();
     for (int i = 0; i < k; ++i) st.insert("new" + to_string(i));
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
-
+// delete k elements from the list
 long long time_delete_list(list<string>& lst , int k){
     auto t0 = std::chrono::steady_clock::now();
     for (int i =0; i < k && !lst.empty(); ++i) lst.pop_back();
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
-
+// delete k elements from the vector
 long long time_delete_vector(vector<string>& v, int k){
     auto t0 = std::chrono::steady_clock::now();
     for (int i =0; i < k && !v.empty(); ++i) v.pop_back();
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
+// delete k elements from the set
   long long time_delete_set(set<string>& st, int k){
       auto t0 = std::chrono::steady_clock::now();
       for (int i =0; i < k && !st.empty(); ++i) st.erase(st.begin());
