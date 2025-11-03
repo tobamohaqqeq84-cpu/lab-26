@@ -32,7 +32,7 @@ bool load_names_file(const string& filename, vector<string>& out);
 void run_one_race(const vector<string>& baseData, long long runSlice[NUM_OPS][NUM_STRUCTS]);
 void print_average(const long long accum[NUM_OPS][NUM_STRUCTS]);
 long long time_read_vector(const vector<string>& base);
-long long time_read_list(const list<string>& base);
+long long time_read_list(const vector<string>& base);
 long long time_read_set(const vector<string>& base);
 long long time_sort_vector(const vector<string>&base);
 long long time_sort_list(const vector<string>& base);
@@ -72,7 +72,25 @@ bool load_names_file(const string& filename, vector<string>& out){
     while (fin >> s) out.push_back(s);
     return true;
 }
-void
+void run_one_race(const vector<string>& baseData, long long runSlice[NUM_OPS][NUM_STRUCTS]){
+    runSlice[READ_OP][VEC] = time_read_vector(baseData);
+    runSlice[READ_OP][LIST_DS] = time_read_list(baseData);
+    runSlice[READ_OP][SET_DS] = time_read_set(baseData);
+    runSlice[SORT_OP][VEC] = time_sort_vector(baseData);
+    runSlice[SORT_OP][LIST_DS] = time_sort_list(baseData);
+    runSlice[SORT_OP][SET_DS] = 0;
+
+vector<string> v(baseData);
+    list<string> lst(baseData.begin(), baseData.end());
+    set<string> st(baseData.begin(), baseData.end());
+
+    runSlice[INSERT_OP][VEC] = time_insert_vector(v, K_INSERT);
+    runSlice[INSERT_OP][LIST_DS] = time_insert_list(lst, K_INSERT);
+    runSlice[INSERT_OP][SET_DS] = time_insert_set(st, K_INSERT);
+    runSlice[DELEE_OP][VEC] = time_delete_vector(v, K_DELETE);
+    runSlice[DELEE_OP][LIST_DS] = time_delete_list(lst, K_DELETE);
+    runSlice[DELEE_OP][SET_DS] = time_delete_set(st, K_DELETE);
+}
 
 
 
