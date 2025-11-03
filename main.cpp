@@ -174,7 +174,7 @@ long long time_insert_set(set<string>& st, int k){
 
 long long time_delete_list(list<string>& lst , int k){
     auto t0 = std::chrono::steady_clock::now();
-    for (int i =0; i < k && !v.empty(); ++i) v.pop_back();
+    for (int i =0; i < k && !lst.empty(); ++i) lst.pop_back();
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
