@@ -22,7 +22,7 @@ using chrono::steady_clock;
     const int NUM_OPS = 4;
     const int NUM_STRUCTS =3;
 
-    enum op {READ_OP,SORT_OP, INSERT_OP, DELETE_OP };
+    enum Op{READ_OP,SORT_OP, INSERT_OP, DELETE_OP };
     enum DS {VEC, LIST_DS, SET_DS};
 
     const int K_INSERT = 2000;
@@ -59,7 +59,7 @@ int main(){
     for (int run = 1; run <= NUM_RUNS;++run){
         run_one_race(baseData, times[0]);
         for (int op = 0; op < NUM_OPS; ++op)
-        for (int ds = 0; ds < NUM_STRUCTS; ++ds);
+        for (int ds = 0; ds < NUM_STRUCTS; ++ds)
          times[1][op][ds] += times[0][op][ds];
     }
 
@@ -91,29 +91,30 @@ vector<string> v(baseData);
     runSlice[INSERT_OP][VEC] = time_insert_vector(v, K_INSERT);
     runSlice[INSERT_OP][LIST_DS] = time_insert_list(lst, K_INSERT);
     runSlice[INSERT_OP][SET_DS] = time_insert_set(st, K_INSERT);
-    runSlice[DELEE_OP][VEC] = time_delete_vector(v, K_DELETE);
-    runSlice[DELEE_OP][LIST_DS] = time_delete_list(lst, K_DELETE);
-    runSlice[DELEE_OP][SET_DS] = time_delete_set(st, K_DELETE);
+    runSlice[DELETE_OP][VEC] = time_delete_vector(v, K_DELETE);
+    runSlice[DELETE_OP][LIST_DS] = time_delete_list(lst, K_DELETE);
+    runSlice[DELETE_OP][SET_DS] = time_delete_set(st, K_DELETE);
     
 }
 
 void print_average(const long long accum[NUM_OPS][NUM_STRUCTS]){
     auto avg = [] (long long sum){ return sum / NUM_RUNS;};
     cout.setf(ios::right);
-    cout << " " << setw(COLW_LABEL) << "Operation" << setw(CLOW_NUM) << "Vector" << setw(CLOW_NUM) << "List" << setw(CLOW_NUM) << "Set" << endl;
+    cout << " " << setw(COLW_LABEL) << "Operation" << setw(COLW_NUM) << "Vector" << setw(COLW_NUM) << "List" << setw(COLW_NUM) << "Set" << endl;
 
-    auto row = [&](string name, int op){
-        cout << setw(COLW_LABEL) << name << setw(CLOW_NUM) << avg(accum[op][VEC]) << setw(CLOW_NUM) << avg(accum[op][LIST_DS]) << setw(CLOW_NUM) << avg(accum[op][SET_DS]) << endl;
+    auto row = [&](const string& name, int op){
+        cout << setw(COLW_LABEL) << name << setw(COLW_NUM) << avg(accum[op][VEC]) << setw(COLW_NUM) << avg(accum[op][LIST_DS]) << setw(COLW_NUM) << avg(accum[op][SET_DS]) << endl;
     };
 
 row("Read", READ_OP);
 row("Sort", SORT_OP);
 row("Insert", INSERT_OP);
-row("Delete", DELEE_OP);
+row("Delete", DELETE_OP);
 }
 
 long long time_read_vector(const vector<string>& base){
     auto t0 = std::chrono::steady_clock::now();
+    vector<string> v;
     for (auto& s : base) v.push_back(s);
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
@@ -164,7 +165,7 @@ long long time_insert_list (list<string>& lst, int k){
     return duration_cast<microseconds>(t1-t0).count();
 }
 
-long long time_insert_set(vector<string>& st, int k){
+long long time_insert_set(set<string>& st, int k){
     auto t0 = std::chrono::steady_clock::now();
     for (int i = 0; i < k; ++i) st.insert("new" + to_string(i));
     auto t1 = std::chrono::steady_clock::now();
