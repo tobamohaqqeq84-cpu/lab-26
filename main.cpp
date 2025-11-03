@@ -141,3 +141,46 @@ long long time_sort_vector(const vector<string>&base){
     auto t1 = std::chrono::steady_clock::now();
     return duration_cast<microseconds>(t1-t0).count();
 }
+
+long long time_sort_list(const vector<string>& base){
+    list<string> lst(base.begin(), base.end());
+    auto t0 = std::chrono::steady_clock::now();
+    lst.sort();
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
+
+long long time_insert_vector(vector<string>& v, int k){
+    auto t0 = std::chrono::steady_clock::now();
+    for (int i = 0; i < k; ++i) v.push_back("new" + to_string(i));
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
+
+long long time_insert_list (list<string>& lst, int k){
+    auto t0 = std::chrono::steady_clock::now();
+    for (int i = 0; i < k; ++i) lst.push_back("new" + to_string(i));
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
+
+long long time_insert_set(vector<string>& st, int k){
+    auto t0 = std::chrono::steady_clock::now();
+    for (int i = 0; i < k && !st.empty();++i) lst.pop_back();
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
+
+long long time_delete_list(list<string>& lst , int k){
+    auto t0 = std::chrono::steady_clock::now();
+    for (int i =0; i < k && !v.empty(); ++i) v.pop_back();
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
+
+long long time_delete_vector(vector<string>& v, int k){
+    auto t0 = std::chrono::steady_clock::now();
+    for (int i =0; i < k && !v.empty(); ++i) v.pop_back();
+    auto t1 = std::chrono::steady_clock::now();
+    return duration_cast<microseconds>(t1-t0).count();
+}
