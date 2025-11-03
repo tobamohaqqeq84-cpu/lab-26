@@ -30,6 +30,16 @@ using chrono::system_clock;
 //---------function prototypes---------
 bool load_names_file(const string& filename, vector<string>& out);
 void run_one_race(const vector<string>& baseData, long long runSlice[NUM_OPS][NUM_STRUCTS]);
+void print_average(const long long accum[NUM_OPS][NUM_STRUCTS]);
+long long time_read_vector(const vector<string>& base);
+long long time_read_list(const list<string>& base);
+long long time_read_set(const vector<string>& base);
+long long time_sort_vector(const vector<string>&base);
+long long time_sort_list(const vector<string>& base);
+long long time_insert_vector(vector<string>& v, int k);
+long long time_insert_list (list<string>& lst, int k);
+long long time_insert_set(set<string>& st, int k);
+
 
 
 
