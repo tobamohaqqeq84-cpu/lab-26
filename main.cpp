@@ -39,6 +39,27 @@ long long time_sort_list(const vector<string>& base);
 long long time_insert_vector(vector<string>& v, int k);
 long long time_insert_list (list<string>& lst, int k);
 long long time_insert_set(set<string>& st, int k);
+long long time_delete_list(list<string>& lst , int k);
+long long time_delete_vector(vector<string>& v, int k);
+long long time_delete_set(set<string>& st, int k);
+
+//-------int mait  function---------
+
+int main(){
+    vector<string> baseData;
+    if(!load_names_file("name.txt", baseData)){
+        cout <<"Error loading file"<<endl;
+        return 1;
+    }
+    long long times[2][NUM_OPS][NUM_STRUCTS] ={};
+    for (int run = 1; run <= NUM_RUNS;++run){
+        run_one_race(baseData, times[0]);
+        for (int op = 0; op; <NUM_OPS; ++op)
+        for (int ds = 0; ds < NUM_STRUCTS; ++ds);
+        times[1][op][ds] += times[0][op][ds];
+    }
+    
+}
 
 
 
